@@ -1,0 +1,24 @@
+{
+  "name": "bamazon-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bamasonAdmin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DefiledSpec/bamazon-cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DefiledSpec/bamazon-cli/issues"
+  },
+  "homepage": "https://github.com/DefiledSpec/bamazon-cli#readme",
+  "dependencies": {
+    "inquirer": "^6.0.0",
+    "mysql": "^2.16.0"
+  }
+}
