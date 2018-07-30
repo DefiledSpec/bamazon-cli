@@ -1,7 +1,7 @@
 let BamazonDb = require('./BamazonDb')
 let inquirer = require('inquirer')
 
-let db = new BamazonDb('bamazon')
+let db = new BamazonDb()
 
 function start() {
     inquirer.prompt([
@@ -41,26 +41,23 @@ function start() {
 }
 start()
 function checkout() {
-    db.addProduct({
-        name: 'Bucket',
-        dept: 'Garden',
-        price: 7.00,
-        qty: 2000
-    })
+
 }
-function shopping() {
-    let items = db.getProducts()
-    console.log(items)
-    items.then(products => {
-        console.log('products: ' + products)
-        for (const item of products) {
-            let itemData = '\n'
-            for (const key in item) {
-                itemData += `${key}: ${item[key]}`
-            }
-            console.log(itemData)
-        }    
-    }).catch(err => {throw err})
+async function shopping() {
+	let items = await db.getProducts()
+	return console.log(items)
+    // let items = db.getProducts()
+    // console.log(items)
+    // items.then(products => {
+    //     console.log('products: ' + products)
+    //     for (const item of products) {
+    //         let itemData = '\n'
+    //         for (const key in item) {
+    //             itemData += `${key}: ${item[key]}`
+    //         }
+    //         console.log(itemData)
+    //     }    
+    // }).catch(err => {throw err})
 
     // let choice = await inquirer.prompt([
     //         {

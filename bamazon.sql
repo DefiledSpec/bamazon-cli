@@ -10,5 +10,4 @@ create table products (
     stock_quantity integer(20)
 );
 
-insert into products (product_name, department_name, price, stock_quantity)
-values ('Hammer', 'Tools', 7.05, 1000);
+insert into products (product_name, department_name, price, stock_quantity) values ('Hammer', 'Tools', 7.05, 1000)
