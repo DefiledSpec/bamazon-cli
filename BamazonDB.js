@@ -11,9 +11,10 @@ class BamazonDb {
 		this.table = 'products'
         this.db.connect()
 	}
-	updateQty(itemId, qty, name) {
+	async updateQty(itemId, qty, name) {
 		qty = qty ? qty : 1
-		if(itemId) {
+		let item = await this.getProducts(itemId)
+		if(item[0].stock_quantity > qty) {
 			return new Promise(async (resolve, reject) => {
 				let sql = `UPDATE products SET stock_quantity = stock_quantity - ${qty} WHERE item_id = ${itemId} AND stock_quantity - ${qty} > 0`
 				this.db.query(sql, (err, result) => {
@@ -22,6 +23,8 @@ class BamazonDb {
 					resolve(message)
 				})
 			})
+		} else {
+			return '\nInsufficient Quantity\n'
 		}
 	}
 	close() {

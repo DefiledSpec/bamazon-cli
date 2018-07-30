@@ -2,7 +2,7 @@ let BamazonDb = require('./BamazonDb')
 let inquirer = require('inquirer')
 
 let db = new BamazonDb()
-start()
+shop()
 
 async function start() {
     let { task } = await inquirer.prompt([
@@ -70,7 +70,7 @@ function displayProducts(items) {
 		let tab = item.product_name.length > 5 ? '\t' : '\t\t'
 		msg += 	`\n| ${item.item_id}\t| ${item.product_name}${tab}|  ${item.department_name}\t| ${item.price}\t| ${item.stock_quantity}\t\t|`
 	}
-	console.log(msg)
+	console.log(msg + '\n')
 }
 
 function runTask(t) {
