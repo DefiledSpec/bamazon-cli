@@ -83,11 +83,7 @@ async function showProducts(item) {
 	try {
 		item = item ? item : false
 		let items = await db.getProducts(item)
-		let msg = 	'\n|Item ID| Product\t| Department\t| Price\t| Stock Qty\t|'
-		for (const item of items) {
-			msg += 	`\n| ${item.item_id}\t| ${item.product_name}\t|  ${item.department_name}\t| ${item.price}\t| ${item.stock_quantity}\t\t|`
-		}
-		console.log(msg)
+		displayProducts(items)
 	}catch(err) {
 		throw err
 	} finally {
@@ -121,6 +117,13 @@ async function deleteItem() {
 	} catch(err) {
 		throw err
 	}
+}
+function displayProducts(items) {
+	let msg = 	'\n|Item ID| Product\t| Department\t| Price\t| Stock Qty\t|'
+	for (const item of items) {
+		msg += 	`\n| ${item.item_id}\t| ${item.product_name}\t|  ${item.department_name}\t| ${item.price}\t| ${item.stock_quantity}\t\t|`
+	}
+	console.log(msg)
 }
 
 function runTask(t) {

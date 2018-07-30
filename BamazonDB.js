@@ -11,13 +11,14 @@ class BamazonDb {
 		this.table = 'products'
         this.db.connect()
 	}
-	updateQty(itemId) {
+	updateQty(itemId, qty, name) {
+		qty = qty ? qty : 1
 		if(itemId) {
 			return new Promise(async (resolve, reject) => {
-				let sql = `UPDATE products SET stock_quantity = stock_quantity - 1 WHERE item_id = ${itemId} AND stock_quantity > 0`
+				let sql = `UPDATE products SET stock_quantity = stock_quantity - ${qty} WHERE item_id = ${itemId} AND stock_quantity - ${qty} > 0`
 				this.db.query(sql, (err, result) => {
 					if (err) reject(err)
-					let message = `\nSuccessfully removed 1 item from stock with ID: '${itemId}'. ${result.message})\n`
+					let message = `\nSuccessfully purchased ${qty} x ${name}(s).\n`
 					resolve(message)
 				})
 			})

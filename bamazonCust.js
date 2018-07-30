@@ -2,71 +2,93 @@ let BamazonDb = require('./BamazonDb')
 let inquirer = require('inquirer')
 
 let db = new BamazonDb()
+start()
 
-function start() {
-    inquirer.prompt([
+async function start() {
+    let { task } = await inquirer.prompt([
         {
             name: 'task',
             message: 'Welcome to Bamazon! What would you like to do?',
             type: 'list',
             choices: [
-                'Add items to your cart',
-                'Checkout',
+                'Shop',
+                'Buy',
                 'Exit',
-            ],
-            filter: val => {
-                switch(val) {
-                    case 'Add items to your cart':
-                        return 'shop'
-                    case 'Checkout':
-                        return 'checkout'
-                    case 'Exit':
-                        return 'exit'
-                    default:
-                        console.log('Command not supported')
-                }
-            }
+            ]
         }
-    ]).then(choice => {
-        switch(choice.task) {
-            case 'shop':
-                shopping()
-            case 'checkout':
-                checkout()
-            case 'exit':
-                process.exit()
-            default:
-        }
-    }).catch(err => {throw err})
+	])
+	runTask(task)
 }
-start()
-function checkout() {
-
+async function buyItem(item) {
+	try {
+		let items = await db.getProducts()
+		let ids = []
+		for (const item of items) {
+			ids.push(`${item.item_id}: ${item.product_name}`)
+		}
+		let { itemId, qty } = await inquirer.prompt([
+			{
+				name: 'itemId',
+				message: 'What is the id of the item you\'d like to purchase?',
+				type: 'list',
+				choices: ids,
+			},
+			{
+				name: 'qty',
+				message: 'How many would you like to buy?',
+				type: 'input',
+				validate: val => !isNaN(val)
+			}
+		])
+		let selectedId = itemId.split(': ')[0]
+		let name = itemId.split(': ')[1]
+		console.log(await db.updateQty(selectedId, qty, name))
+	} catch(err) {
+		throw err
+	} finally {
+		start()
+	}
+	
 }
-async function shopping() {
-	let items = await db.getProducts()
-	return console.log(items)
-    // let items = db.getProducts()
-    // console.log(items)
-    // items.then(products => {
-    //     console.log('products: ' + products)
-    //     for (const item of products) {
-    //         let itemData = '\n'
-    //         for (const key in item) {
-    //             itemData += `${key}: ${item[key]}`
-    //         }
-    //         console.log(itemData)
-    //     }    
-    // }).catch(err => {throw err})
-
-    // let choice = await inquirer.prompt([
-    //         {
-    //             name: 'item',
-    //             message: 'What item would you like to add to your cart?'
-    //         }
-    //     ])
-    // console.log(choice)
-    // let addItem = await db.addCart(choice.item)
-    // console.log(addItem)
+function exit() {
+	db.close()
+	process.exit()
+}
+async function shop() {
+	try {
+		let items = await db.getProducts()
+		return displayProducts(items)
+	} catch(err) {
+		throw err
+	} finally {
+		start()
+	}
+}
+function displayProducts(items) {
+	let msg = 	'\n|Item ID| Product\t| Department\t| Price\t| Stock Qty\t|'
+	for (const item of items) {
+		let tab = item.product_name.length > 5 ? '\t' : '\t\t'
+		msg += 	`\n| ${item.item_id}\t| ${item.product_name}${tab}|  ${item.department_name}\t| ${item.price}\t| ${item.stock_quantity}\t\t|`
+	}
+	console.log(msg)
 }
 
+function runTask(t) {
+	if(!t) return
+	switch(t) {
+		case 'Shop':
+		shop()
+		break
+	case 'Buy':
+		buyItem()
+		break
+	case 'Exit':
+		db.close()
+		exit()
+		break
+	default:
+		msg = 'Something went wrong :('
+		console.log(msg)
+		start()
+	}
+}
