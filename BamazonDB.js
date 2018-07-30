@@ -10,30 +10,59 @@ class BamazonDb {
 		})
 		this.table = 'products'
         this.db.connect()
-    }
+	}
+	updateQty(itemId) {
+		if(itemId) {
+			return new Promise(async (resolve, reject) => {
+				let sql = `UPDATE products SET stock_quantity = stock_quantity - 1 WHERE item_id = ${itemId} AND stock_quantity > 0`
+				this.db.query(sql, (err, result) => {
+					if (err) reject(err)
+					let message = `\nSuccessfully removed 1 item from stock with ID: '${itemId}'. ${result.message})\n`
+					resolve(message)
+				})
+			})
+		}
+	}
+	close() {
+		this.db.end()
+	}
     addProduct(item) {
         if(item) {
             return new Promise((resolve, reject) => {
                 let sql = `INSERT INTO ${this.table} (product_name, department_name, price, stock_quantity)
-				VALUES ('${item.name}', '${item.dept}', ${item.price}, ${item.qty});`
+				VALUES ('${item.name}', '${item.dept}', ${item.price}, ${item.qty})`
                 this.db.query(sql, (err, result) => {
-                    if (err) reject(err)
-                    resolve(result)
-                    // this.db.end()
+					if (err) reject(err)
+					let { affectedRows, insertId } = result
+					let message = `\nSuccessfully inserted '${item.name}'. Rows Affected: ${affectedRows} | ID: ${insertId}\n`
+                    resolve(message)
                 })
             })
         }else{
 			console.log('no item')
 		}
-    }
-    getProducts(search) {
-        search = search ? search : '*'
+	}
+	deleteItem(itemId) {
+		return new Promise((resolve, reject) => {
+			let sql = `DELETE FROM ${this.table} WHERE item_id = ${itemId}`
+			this.db.query(sql, (err, result) => {
+				if (err) reject(err)
+				let message = result.affectedRows > 0 
+				? `\nSuccessfully deleted Id: ${itemId}\n`
+				: `\nFailed to delete Id: ${itemId}. Item doesn't exist.\n` 
+				resolve(message)
+			})
+		})
+	}
+    getProducts(itemId) {
+		let sql = `SELECT * FROM ${this.table} `
+		if(itemId) { 
+			sql += `WHERE item_id = ${itemId}`
+		}
         return new Promise((resolve, reject) => {
-            let sql = `SELECT ${search} FROM ${this.table};`
             this.db.query(sql, (err, result) => {
                 if (err) reject(err)
-                resolve(result);
-                this.db.end();
+                resolve(result)
             })
         })
     }
