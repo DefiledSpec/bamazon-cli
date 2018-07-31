@@ -5,17 +5,17 @@ let db = new BamazonDb()
 shop()
 
 async function start() {
-    let { task } = await inquirer.prompt([
-        {
-            name: 'task',
-            message: 'Welcome to Bamazon! What would you like to do?',
-            type: 'list',
-            choices: [
-                'Shop',
-                'Buy',
-                'Exit',
-            ]
-        }
+	let { task } = await inquirer.prompt([
+		{
+			name: 'task',
+			message: 'Welcome to Bamazon! What would you like to do?',
+			type: 'list',
+			choices: [
+				'Shop',
+				'Buy',
+				'Exit',
+			]
+		}
 	])
 	runTask(task)
 }
@@ -37,18 +37,18 @@ async function buyItem(item) {
 				name: 'qty',
 				message: 'How many would you like to buy?',
 				type: 'input',
-				validate: val => !isNaN(val)
+				validate: val => !isNaN(val),
 			}
 		])
 		let selectedId = itemId.split(': ')[0]
 		let name = itemId.split(': ')[1]
 		console.log(await db.updateQty(selectedId, qty, name))
-	} catch(err) {
+	} catch (err) {
 		throw err
 	} finally {
 		start()
 	}
-	
+
 }
 function exit() {
 	db.close()
@@ -58,37 +58,38 @@ async function shop() {
 	try {
 		let items = await db.getProducts()
 		return displayProducts(items)
-	} catch(err) {
+	} catch (err) {
 		throw err
 	} finally {
 		start()
 	}
 }
 function displayProducts(items) {
-	let msg = 	'\n|Item ID| Product\t| Department\t| Price\t| Stock Qty\t|'
+	let msg = '\n|Item ID| Product\t| Price\t|\n' +
+		'---------------------------------'
 	for (const item of items) {
 		let tab = item.product_name.length > 5 ? '\t' : '\t\t'
-		msg += 	`\n| ${item.item_id}\t| ${item.product_name}${tab}|  ${item.department_name}\t| ${item.price}\t| ${item.stock_quantity}\t\t|`
+		msg += `\n| ${item.item_id}\t| ${item.product_name}${tab}| ${item.price}\t|`
 	}
 	console.log(msg + '\n')
 }
 
 function runTask(t) {
-	if(!t) return
-	switch(t) {
+	if (!t) return
+	switch (t) {
 		case 'Shop':
-		shop()
-		break
-	case 'Buy':
-		buyItem()
-		break
-	case 'Exit':
-		db.close()
-		exit()
-		break
-	default:
-		msg = 'Something went wrong :('
-		console.log(msg)
-		start()
+			shop()
+			break
+		case 'Buy':
+			buyItem()
+			break
+		case 'Exit':
+			db.close()
+			exit()
+			break
+		default:
+			msg = 'Something went wrong :('
+			console.log(msg)
+			start()
 	}
 }

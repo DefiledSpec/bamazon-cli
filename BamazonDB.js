@@ -10,14 +10,13 @@ class BamazonDb {
             database: 'bamazon'
 		})
 		this.table = 'products'
-        // this.db.connect()
 	}
 	async updateQty(itemId, qty, name) {
 		qty = qty ? qty : 1
 		let item = await this.getProducts(itemId)
-		if(item[0].stock_quantity > qty) {
+		if(item[0].stock_quantity >= qty) {
 			return new Promise(async (resolve, reject) => {
-				let sql = `UPDATE products SET stock_quantity = stock_quantity - ${qty} WHERE item_id = ${itemId} AND stock_quantity - ${qty} > 0`
+				let sql = `UPDATE products SET stock_quantity = stock_quantity - ${qty} WHERE item_id = ${itemId}`
 				this.db.query(sql, (err, result) => {
 					if (err) reject(err)
 					let message = `\nSuccessfully purchased ${qty} x ${name}(s).\n`
@@ -56,6 +55,15 @@ class BamazonDb {
 				? `\nSuccessfully deleted Id: ${itemId}\n`
 				: `\nFailed to delete Id: ${itemId}. Item doesn't exist.\n` 
 				resolve(message)
+			})
+		})
+	}
+	getLowStock() {
+		let sql = `SELECT * FROM ${this.table} WHERE stock_quantity < 5`
+		return new Promise((resolve, reject) => {
+			this.db.query(sql, (err, result) => {
+				if(err) reject(err)
+				resolve(result)
 			})
 		})
 	}

@@ -2,6 +2,7 @@ let inquirer = require('inquirer')
 let BamazonDB = require('./BamazonDB')
 
 let db = new BamazonDB()
+console.log('\n Welcome To Bamzon <ADMIN PANEL>\n')
 start()
 
 async function start() {
@@ -13,6 +14,7 @@ async function start() {
 			choices: [
 				'Show Products',
 				'Add Item',
+				'View Low Stock',
 				'Update Stock Quantity',
 				'Delete Item',
 				'Exit'
@@ -26,13 +28,30 @@ async function start() {
 
 async function updateItem() {
 	try {
-		let { itemId } = await inquirer.prompt([{
-			type: 'input',
-			name: 'itemId',
-			message: 'Which item would you like to update?',
-			validate: (val) => !isNaN(val),
-		}])
-		console.log(await db.updateQty(itemId))
+		let items = await db.getProducts()
+		let ids = []
+		for (const item of items) {
+			ids.push(`${item.item_id}: ${item.product_name}`)
+		}
+		let { itemId, qty } = await inquirer.prompt([
+			{
+				type: 'list',
+				name: 'itemId',
+				message: 'Which item would you like to update?',
+				choices: ids
+			},
+			{
+				type: 'input',
+				name: 'qty',
+				message: 'How many would you like to add?',
+				validate: val => !isNaN(val),
+			}
+		])
+		qty = qty * -1
+		let selectedId = itemId.split(': ')[0]
+		let name = itemId.split(': ')[1]
+		await db.updateQty(selectedId, qty, name)
+		console.log(`\nSuccessfully added ${qty * -1} x ${name}(s)\n`)
 	} catch(err) {
 		throw err
 	} finally {
@@ -130,13 +149,22 @@ async function deleteItem() {
 		throw err
 	}
 }
+async function viewLowStock() {
+	try {
+		let items = await db.getLowStock()
+		displayProducts(items)
+		start()
+	}catch(err) {
+		throw err
+	}
+}
 function displayProducts(items) {
 	let msg = 	'\n|Item ID| Product\t| Department\t| Price\t| Stock Qty |'
 	for (const item of items) {
 		let tab = item.product_name.length > 5 ? '\t' : '\t\t'
 		msg += 	`\n| ${item.item_id}\t| ${item.product_name}${tab}|  ${item.department_name}\t| ${item.price}\t| ${item.stock_quantity}\t    |`
 	}
-	console.log(msg)
+	console.log(msg + '\n')
 }
 
 function runTask(t) {
@@ -153,6 +181,9 @@ function runTask(t) {
 		break
 	case 'Delete Item':
 		deleteItem()
+		break
+	case 'View Low Stock':
+		viewLowStock()
 		break
 	case 'Exit':
 		db.close()
