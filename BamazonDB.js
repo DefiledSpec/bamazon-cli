@@ -2,14 +2,15 @@ let mysql = require('mysql')
 
 class BamazonDb {
     constructor() {
-        this.db = mysql.createConnection({
-            host: '127.0.0.1',
+        this.db = mysql.createPool({
+			connectionLimit: 10,
+			host: '127.0.0.1',
             user: 'root',
             password: 'root',
             database: 'bamazon'
 		})
 		this.table = 'products'
-        this.db.connect()
+        // this.db.connect()
 	}
 	async updateQty(itemId, qty, name) {
 		qty = qty ? qty : 1
