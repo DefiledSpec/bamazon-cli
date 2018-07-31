@@ -1,15 +1,17 @@
-create database bamazon;
+CREATE DATABASE bamazon;
 
-use bamazon;
+USE bamazon;
 
-create table products (
-    item_id integer(20) primary key auto_increment,
-    product_name varchar(255),
-    department_name varchar(255),
-    price decimal(5,2),
-    stock_quantity integer(20)
+CREATE TABLE products (
+    item_id INTEGER(20) PRIMARY KEY AUTO_INCREMENT,
+    product_name VARCHAR(255),
+    department_name VARCHAR(255),
+    price DECIMAL(5,2),
+    stock_quantity INTEGER(20)
 );
 
-insert into products (product_name, department_name, price, stock_quantity) values ('Hammer', 'Tools', 7.05, 1000);
-use bamazon;
-select * from products;
+INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ('Hammer', 'Tools', 7.05, 1000);
+
+
+USE bamazon;
+SELECT * FROM products;
