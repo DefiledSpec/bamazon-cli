@@ -72,10 +72,22 @@ async function addItem(item) {
 			},
 		])
 		console.log(await db.addProduct({ name, dept, price, qty }))
+		let { another } = await inquirer.prompt([
+			{
+				name: 'another',
+				message: 'Would you like to add another item?',
+				type: 'confirm'
+			}
+		])
+		if(another) {
+			addItem()
+		}else{
+			start()
+		}
 	}catch(err) {
 		throw err
 	}finally{
-		start()
+
 	}
 }
 
@@ -119,9 +131,10 @@ async function deleteItem() {
 	}
 }
 function displayProducts(items) {
-	let msg = 	'\n|Item ID| Product\t| Department\t| Price\t| Stock Qty\t|'
+	let msg = 	'\n|Item ID| Product\t| Department\t| Price\t| Stock Qty |'
 	for (const item of items) {
-		msg += 	`\n| ${item.item_id}\t| ${item.product_name}\t|  ${item.department_name}\t| ${item.price}\t| ${item.stock_quantity}\t\t|`
+		let tab = item.product_name.length > 5 ? '\t' : '\t\t'
+		msg += 	`\n| ${item.item_id}\t| ${item.product_name}${tab}|  ${item.department_name}\t| ${item.price}\t| ${item.stock_quantity}\t    |`
 	}
 	console.log(msg)
 }
