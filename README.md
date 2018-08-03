@@ -1,12 +1,16 @@
 # Bamazon CLI
 
-<!-- [![HitCount](http://hits.dwyl.io/defiledspec/bamazon-cli.svg)](http://hits.dwyl.io/defiledspec/bamazon-cli) -->
+[![HitCount](http://hits.dwyl.io/defiledspec/bamazon-cli.svg)](http://hits.dwyl.io/defiledspec/bamazon-cli)
+
+## What is Bamazon?
 
 Bamazon is an 'amazon like' storefront on the command line, written in node and using mySQL for data storage.
 
 ![node.js](./screenshots/nodejs-75x75.png)
 
 ![node.js](./screenshots/mysql-100x50.png)
+
+---
 
 ## Getting Started
 
@@ -18,7 +22,7 @@ Bamazon is an 'amazon like' storefront on the command line, written in node and 
 
 * mySQL Workbench
 
-## Setup
+### Setup
 
 First clone the repo using *bash*.
 
@@ -56,9 +60,9 @@ this.db = mysql.createPool({
 
 \* Please note that to view items you must add them first using the Manager CLI. \*
 
-## Customer CLI
-
 ---
+
+## Customer CLI
 
 To use Bamazon as a customer run `node bamazonCust.js` in *bash*.
 
@@ -94,9 +98,9 @@ Select one of the options provided.
 
 * Closes the Bamazon Customer CLI.
 
-## Manager CLI
-
 ---
+
+## Manager CLI
 
 To use Bamazon as a manager run `node bamazonManager.js` in *bash*.
 
@@ -165,3 +169,5 @@ Select one of the options provided.
 * Exit
   
   * Closes the Bamazon Manager CLI.
+
+  ---
