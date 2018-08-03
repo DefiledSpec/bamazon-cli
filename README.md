@@ -4,7 +4,7 @@
 
 Bamazon is an 'amazon like' storefront on the command line, written in node and using mySQL for data storage.
 
-![node.js](./screenshots/nodejs.png =75x75)
+![node.js](./screenshots/nodejs.png)
 
 ![node.js](./screenshots/mysql.png =100x50)
 
