@@ -37,9 +37,13 @@ class BamazonDb {
 				VALUES ('${item.name}', '${item.dept}', ${item.price}, ${item.qty})`
                 this.db.query(sql, (err, result) => {
 					if (err) reject(err)
-					let { affectedRows, insertId } = result
-					let message = `\nSuccessfully inserted '${item.name}'. Rows Affected: ${affectedRows} | ID: ${insertId}\n`
-                    resolve(message)
+					if (result) {
+						let { affectedRows, insertId } = result
+						let message = `\nSuccessfully inserted '${item.name}'. Rows Affected: ${affectedRows} | ID: ${insertId}\n`
+						resolve(message)
+					} else {
+						reject('Item could not be inserted.')
+					}
                 })
             })
         }else{
