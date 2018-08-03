@@ -10,8 +10,6 @@ CREATE TABLE products (
     stock_quantity INTEGER(20)
 );
 
-INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ('Hammer', 'Tools', 7.05, 1000);
-
-
-USE bamazon;
-SELECT * FROM products;
+INSERT INTO products 
+(product_name, department_name, price, stock_quantity) 
+VALUES ('Hammer', 'Tools', 7.05, 1000);
